@@ -1,0 +1,413 @@
+body {
+    background: linear-gradient(135deg, #FFF8A2 0%, #CE79FF 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    /* Включаем Flexbox */
+    display: flex;
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: flex-start; /* Прижимаем к верху */
+    gap: 20px; /* Расстояние между колонками */
+    
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    transition: background 2s ease, color 2s ease;
+}
+
+/* Общие стили для обеих карточек */
+.card {
+    background: rgba(255, 255, 255, 0.75); 
+    backdrop-filter: blur(10px); 
+    padding: 30px;
+    border-radius: 20px; 
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); 
+    border: 1px solid rgba(255, 255, 255, 0.5); 
+    position: relative;
+}
+
+/* Левая панель (поиск) */
+.sidebar {
+    width: 350px; 
+    flex-shrink: 0; /* <--- ВОТ ЭТА СТРОЧКА ЗАПРЕЩАЕТ СЖИМАТЬСЯ */
+    text-align: center;
+}
+/* Правая панель (результат) */
+.content-area {
+    flex-grow: 1; /* Занимает всё оставшееся место */
+    max-width: 800px;
+    min-height: 500px;
+}
+
+/* 3. Заголовок и текст */
+h1 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+}
+
+/* 4. Стили для поля ввода текста (поиск) */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    border: 2px solid #333333; 
+    border-radius: 25px; /* Круглые углы */
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+    transition: 0.3s;
+    color: #333333; 
+}
+
+input[type="text"]::placeholder {
+    color: #666666; 
+}
+
+input[type="text"]:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 5. Стили для выпадающего списка (Алгебра/Физика) */
+select {
+    width: 100%;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    border: 2px solid #333333; 
+    border-radius: 25px; /* Тоже делаем капсулой */
+    font-size: 16px;
+    box-sizing: border-box;
+    outline: none;
+    transition: 0.3s;
+    color: #333333; 
+    
+    /* Убираем стандартную стрелку и ставим свою */
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+}
+
+select:focus {
+    background-color: #ffffff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+/* Контейнер для кастомного списка */
+.custom-select {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Кнопка (капсула), на которую мы нажимаем */
+.select-btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid #333333;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.3s;
+}
+
+.select-btn:hover {
+    background-color: #ffffff;
+}
+
+.arrow {
+    font-size: 12px;
+    color: #333;
+}
+
+/* Само выпадающее меню (по умолчанию скрыто) */
+.select-options {
+    display: none; /* Скрываем */
+    position: absolute;
+    top: 110%;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 15px; /* Закругляем само меню! */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10;
+    overflow: hidden; /* Чтобы кнопки внутри не вылезали за края */
+}
+
+/* Показываем меню, если добавить класс "show" */
+.select-options.show {
+    display: block;
+}
+
+/* Строчки внутри меню */
+.select-options div {
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: 0.2s;
+}
+
+/* Подсветка строчки при наведении */
+.select-options div:hover {
+    background-color: #f0f0f0;
+}
+/* Эффект для кнопки прогресса */
+button[onclick="showProgress()"]:hover {
+    background-color: #0056b3 !important;
+}
+/* --- ТЕМНАЯ ТЕМА --- */
+body.dark-theme {
+    /* Мы больше не меняем здесь background! */
+    color: #e0e0e0;
+}
+
+/* Когда включается ночная тема, наш темный слой становится видимым (opacity: 1) */
+body.dark-theme::before {
+    opacity: 0.85; /* 85% непрозрачности, чтобы градиент немного просвечивал */
+}
+
+/* Делаем карточку темной и полупрозрачной */
+body.dark-theme .card {
+    background: rgba(30, 30, 40, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Меняем цвета текста */
+body.dark-theme h1, 
+body.dark-theme h3, 
+body.dark-theme p,
+body.dark-theme b {
+    color: #ffffff;
+}
+
+/* Меняем цвет полей ввода и меню */
+body.dark-theme input[type="text"],
+body.dark-theme .select-btn,
+body.dark-theme .select-options {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-color: #555;
+}
+
+body.dark-theme .select-options div {
+    color: #ffffff;
+}
+
+body.dark-theme .select-options div:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+/* Это наш слой для плавного затемнения */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0f2027; /* Темно-синий цвет ночи */
+    opacity: 0; /* По умолчанию он невидим */
+    z-index: -1; /* Он находится ПОЗАДИ карточки с сайтом */
+    transition: opacity 2s ease; /* Плавно проявляется за 2 секунды */
+}
+/* Адаптация под телефоны */
+/* --- АДАПТАЦИЯ ПОД ТЕЛЕФОНЫ --- */
+/* Этот код сработает ТОЛЬКО если экран меньше 900 пикселей */
+@media (max-width: 900px) {
+    body {
+        flex-direction: column; 
+        align-items: center;
+    }
+    .sidebar, .content-area {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+body.dark-theme #miniStats {
+    background: rgba(0, 0, 0, 0.3) !important;
+    color: #fff !important;
+}
+body.dark-theme #miniStats b {
+    color: #fff !important;
+}
+/* Контейнер на весь экран, но не перекрывает кнопки */
+#particles-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Позволяет кликать сквозь искорки */
+    z-index: -1; /* Отправляет их на задний план, за карточки */
+    overflow: hidden;
+}
+
+/* Настройки для одной искорки */
+.particle {
+    position: absolute;
+    bottom: -50px; /* Начинают полет снизу экрана */
+    opacity: 0; /* Изначально невидимы */
+    animation: floatUp linear infinite; /* Бесконечная анимация */
+}
+
+/* Сама анимация полета */
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8; /* Быстро проявляются */
+    }
+    90% {
+        opacity: 0.8; /* Остаются видимыми */
+    }
+    100% {
+        transform: translateY(-110vh) rotate(360deg); /* Улетают наверх и прокручиваются */
+        opacity: 0; /* Исчезают наверху */
+    }
+}
+/* Анимация для появления конспекта */
+@keyframes slideUpFade {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Начинает на 20px ниже */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Встает на свое место */
+    }
+}
+
+/* Класс, который мы будем добавлять карточке с результатом */
+.animate-result {
+    animation: slideUpFade 0.5s ease-out forwards;
+}
+/* Эффект для всех кнопок */
+button {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+/* Когда наводим мышку на кнопку */
+button:hover {
+    transform: translateY(-3px); /* Кнопка поднимается на 3 пикселя вверх */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Появляется тень */
+}
+
+/* Когда нажимаем на кнопку (чтобы был эффект нажатия) */
+button:active {
+    transform: translateY(-1px); /* Кнопка слегка опускается обратно */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+/* Эффект для всех кнопок */
+button {
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Эффект для капсул поиска */
+.search-item:hover {
+    transform: translateY(-3px) scale(1.01) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+    border-color: #007bff !important;
+}
+/* --- ИСПРАВЛЕНИЕ ДЛЯ ТЕМНОЙ ТЕМЫ --- */
+
+/* Делаем фон самого конспекта темным, а не белым */
+body.dark-theme .content-area div[style*="background: #fff"] {
+    background-color: transparent !important;
+}
+
+/* Меняем цвет текста в конспекте на светло-серый (чтобы глаза не уставали от чисто белого) */
+body.dark-theme .content-area p,
+body.dark-theme .content-area b,
+body.dark-theme .content-area h3,
+body.dark-theme .content-area div {
+    color: #e0e0e0 !important;
+}
+
+/* Ссылка "Смотреть видео" остается красной, но чуть ярче */
+body.dark-theme .content-area a {
+    color: #ff6b6b !important;
+}
+
+/* Если внутри конспекта есть какие-то выделения <mark>, делаем их фон темно-желтым */
+body.dark-theme .content-area mark {
+    background-color: #665c00 !important;
+    color: #ffffff !important;
+}
+/* Стили для всплывающего окна */
+.toast {
+    background: #28a745; /* Зеленый цвет (успех) */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+/* Анимация выезда справа */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Анимация исчезновения */
+.toast.fade-out {
+    animation: fadeOut 0.3s ease-in forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+body.dark-theme .sidebar div[style*="background: rgba(255, 255, 255, 0.5)"] {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+body.dark-theme .sidebar div[style*="background: rgba(255, 255, 255, 0.5)"] div {
+    color: #fff !important;
+}
+body.dark-theme #daysToSummer {
+    color: #66b3ff !important;
+}

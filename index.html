@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Школьный помощник</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="particles-container"></div>
+
+
+    <div class="card sidebar">
+        <button onclick="toggleTheme()" id="themeBtn" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; cursor: pointer; z-index: 10;">🌙</button>
+        
+        <h1>Школьный помощник</h1>
+        <p>Выберите класс предмет и тему :</p>
+        
+        <!-- Выбор класса -->
+        <div class="custom-select" id="customClassSelect">
+            <div class="select-btn" onclick="toggleClassMenu()">
+                <span id="selectedClass">8 класс</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="select-options" id="classOptions">
+                <div onclick="chooseClass('8', '8 класс')">8 класс</div>
+                <div onclick="chooseClass('9', '9 класс')">9 класс</div>
+            </div>
+        </div>
+        <input type="hidden" id="classSelect" value="8">
+
+        <!-- Выбор предмета -->
+        <div class="custom-select" id="customSelect">
+            <div class="select-btn" onclick="toggleMenu()">
+                <span id="selectedSubject">⚡ Физика</span>
+                <span class="arrow">▼</span>
+            </div>
+            <div class="select-options" id="selectOptions">
+                <div onclick="chooseSubject('algebra', '📐 Алгебра')">📐 Алгебра</div>
+                <div onclick="chooseSubject('physics', '⚡ Физика')">⚡ Физика</div>
+            </div>
+        </div>
+        <input type="hidden" id="subjectSelect" value="physics">
+
+        <!-- Поиск -->
+        <input type="text" id="searchInput" placeholder="Введи тему (например: МКТ)" oninput="liveSearch()" onkeydown="if(event.key === 'Enter') { document.activeElement.blur(); }">
+        
+        <!-- Кнопка случайной темы -->
+        <button onclick="randomParagraph()" style="width: 100%; padding: 12px; background-color: #6c757d; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; margin-top: 10px; transition: 0.3s;">
+            🎲 Случайная тема
+        </button>
+                <button onclick="panicButton()" style="width: 100%; padding: 12px; background-color: #ff9800; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; margin-top: 10px; transition: 0.3s;">
+            🆘 Паника! (Завтра контрольная)
+        </button>
+
+        <!-- КРАСИВОЕ ОКНО СТАТИСТИКИ (внутри левой панели) -->
+        <div style="margin-top: 25px; padding: 20px; background: rgba(255, 255, 255, 0.5); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+            
+            <button onclick="showProgress()" style="width: 100%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 25px; font-size: 15px; cursor: pointer; margin-bottom: 15px; transition: 0.3s;">
+                📈 Мой прогресс 📊
+            </button>
+
+            <div id="miniStats" style="font-size: 14px; color: #333; text-align: center;">
+                Загрузка статистики...
+            </div>
+                    <!-- Счетчик до лета -->
+        <div style="margin-top: 20px; padding: 15px; background: rgba(255, 255, 255, 0.5); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.8); text-align: center;">
+            <div style="font-size: 14px; color: #555; margin-bottom: 5px;">До летних каникул осталось:</div>
+            <div style="font-size: 24px; font-weight: bold; color: #007bff;" id="daysToSummer">...</div>
+            <div style="font-size: 12px; color: #777;">дней</div>
+        </div>
+
+        <!-- Факт дня -->
+        <div style="margin-top: 15px; padding: 15px; background: rgba(255, 255, 255, 0.5); border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.8); text-align: center;">
+            <div style="font-size: 14px; color: #555; font-weight: bold; margin-bottom: 5px;">💡 Факт дня</div>
+            <div style="font-size: 13px; color: #333;" id="factOfTheDay">Загрузка...</div>
+        </div>
+        </div>
+    </div>
+
+    <!-- ПРАВАЯ ПАНЕЛЬ (Результат) -->
+    <div class="card content-area" id="result">
+        <div style="text-align: center; color: #888; margin-top: 100px;">
+            <h2>Добро пожаловать! 📖📚</h2>
+            <p>Выбери класс, предмет и начни вводить название темы в поиске слева.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+        <!-- Контейнер для всплывающих окон -->
+    <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;"></div>
+</body>
+</html>
